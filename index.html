@@ -554,20 +554,20 @@
     hideStatus();
 
     try {
-      const res = await fetch(WEBHOOK, {
+      // Use text/plain + no-cors to avoid CORS preflight OPTIONS request
+      // Make parses the JSON body correctly regardless of content-type
+      await fetch(WEBHOOK, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify({ url })
       });
 
-      if (res.ok) {
-        saveRecent(url);
-        showStatus('success', 'Published successfully!', 'Your post is now live on the Expecting.ai LinkedIn company page.');
-        urlInput.value = '';
-        urlInput.classList.remove('valid');
-      } else {
-        showStatus('error', 'Publish failed', `Webhook returned ${res.status}. Check Make for details.`);
-      }
+      // no-cors means we can't read the response status, assume success
+      saveRecent(url);
+      showStatus('success', 'Sent to Make!', 'Your post is being generated and will go live on the Expecting.ai LinkedIn page in ~15 seconds.');
+      urlInput.value = '';
+      urlInput.classList.remove('valid');
     } catch (err) {
       showStatus('error', 'Network error', 'Could not reach the webhook. Check your connection.');
     } finally {
