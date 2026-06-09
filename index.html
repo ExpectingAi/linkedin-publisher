@@ -556,8 +556,8 @@
     try {
       // Use text/plain + no-cors to avoid CORS preflight OPTIONS request
       // Make parses the JSON body correctly regardless of content-type
-      // Send as GET with query param — avoids all CORS issues
-      await fetch(`${WEBHOOK}?url=${encodeURIComponent(url)}`, {
+      // Send blog URL as query param — Make sees full URL in 1.url
+      await fetch(`${WEBHOOK}?blog=${encodeURIComponent(url)}`, {
         method: 'GET',
         mode: 'no-cors'
       });
