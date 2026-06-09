@@ -556,14 +556,12 @@
     try {
       // Use text/plain + no-cors to avoid CORS preflight OPTIONS request
       // Make parses the JSON body correctly regardless of content-type
-      await fetch(WEBHOOK, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ url })
+      // Send as GET with query param — avoids all CORS issues
+      await fetch(`${WEBHOOK}?url=${encodeURIComponent(url)}`, {
+        method: 'GET',
+        mode: 'no-cors'
       });
 
-      // no-cors means we can't read the response status, assume success
       saveRecent(url);
       showStatus('success', 'Sent to Make!', 'Your post is being generated and will go live on the Expecting.ai LinkedIn page in ~15 seconds.');
       urlInput.value = '';
